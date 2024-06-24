@@ -1,4 +1,4 @@
-const MESSAGES = {
+const MESSAGE_LEVELS = {
   fatal: 0,
   error: 1,
   warn: 2,
@@ -7,21 +7,14 @@ const MESSAGES = {
   trace: 5,
 }
 
-const GRADES = {
+const GRADE = {
   PASS: 'PASS',
   WARNING: 'WARNING',
   ERROR: 'ERROR',
   CRITICAL: 'CRITICAL',
 }
 
-const FILE_TYPES = {
-  EMAIL_TEMPLATE: 1,
-  EMAIL_FRAGMENT: 2,
-  TEMPLATE_FRAGMENT: 3,
-}
-
 module.exports = {
-  MESSAGES,
-  GRADES,
-  FILE_TYPES,
+  MESSAGE_LEVELS,
+  GRADE,
 }
