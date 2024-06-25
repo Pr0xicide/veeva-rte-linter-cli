@@ -9,5 +9,5 @@ const validate = (tokens) => {
 }
 
 module.exports = {
-  validate: validate,
+  validate,
 }
