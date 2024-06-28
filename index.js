@@ -5,7 +5,8 @@ const {
 } = require('veeva-approved-email-util')
 const { FILE_TYPES } = require('./src/util/cli')
 const { MESSAGE_LEVELS } = require('./src/util/logging')
-const { determineTokenType } = require('./src/token/type')
+const { determineTokenType } = require('veeva-approved-email-util/src/main')
+const { lintVeevaTokens } = require('./src/token/lint')
 
 const logger = createLogger({
   levels: MESSAGE_LEVELS,
@@ -72,11 +73,13 @@ const lintHTMLFile = (fileType, filePath) => {
       )
 
       // Determine token type.
-      logger.info(`Determining token types found`)
+      logger.info(`Determining token types in "${filePath}"`)
       determineTokenType(veevaTokens)
 
       // Lint Veeva tokens.
-      logger.info(`Linting Veeva tokens`)
+      logger.info(`Linting all ${veevaTokens.length} Veeva tokens found`)
+      console.log(veevaTokens)
+      lintVeevaTokens(veevaTokens)
 
       // Lint file type (template, fragment, template fragment).
       logger.info(`Linting Veeva tokens with the file type provided`)

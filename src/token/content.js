@@ -13,7 +13,17 @@ const standardContentTokens = [
   // "{{User.MobilePhone}}",
 ]
 
-const validate = (veevaToken) => {}
+const validate = (veevaToken) => {
+  const { value } = veevaToken
+
+  // Check if token is a valid short hand notation.
+  if (standardContentTokens.indexOf(value) >= 0) return
+
+  return createLogMessage(
+    GRADE.ERROR,
+    'Content Token: Unidentified content token'
+  )
+}
 
 module.exports = {
   validate,
