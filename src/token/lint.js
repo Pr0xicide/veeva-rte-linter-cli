@@ -9,7 +9,10 @@ const lintVeevaTokens = (veevaTokens) => {
   const logs = []
 
   veevaTokens.forEach((token) => {
-    if (TOKEN_VALIDATORS[token.type]) TOKEN_VALIDATORS[token.type](token)
+    if (TOKEN_VALIDATORS[token.type]) {
+      const validToken = TOKEN_VALIDATORS[token.type](token)
+      if (validToken.grade) logs.push(validToken)
+    }
   })
 
   return logs
