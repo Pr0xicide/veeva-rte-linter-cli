@@ -14,10 +14,10 @@ const standardContentTokens = [
 ]
 
 const validate = (veevaToken) => {
-  const { value } = veevaToken
+  const { value: token } = veevaToken
 
   // Check if token is a valid short hand notation.
-  if (standardContentTokens.indexOf(value) >= 0) return
+  if (standardContentTokens.indexOf(token) >= 0) return
 
   return createLogMessage(
     GRADE.ERROR,

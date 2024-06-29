@@ -4,30 +4,30 @@ const REGEX_FRAGMENT_LIMIT = /\[(.*?)\]/
 const STANDARD_FRAGMENT_TOKEN = '{{insertEmailFragments}}'
 
 const validate = (veevaToken) => {
-  const { value } = veevaToken
+  const { value: token } = veevaToken
 
   // If no fragment limit is defined, and standard token is defined correctly.
-  if (value === STANDARD_FRAGMENT_TOKEN) return
+  if (token === STANDARD_FRAGMENT_TOKEN) return
 
   // Check proper syntax for defining the fragment limit.
-  if (value.indexOf('[]') > 0)
+  if (token.indexOf('[]') > 0)
     return createLogMessage(
       GRADE.CRITICAL,
       'Syntax Error: Need to define min and max limit for fragments.'
     )
-  if (value.indexOf('[') != 22)
+  if (token.indexOf('[') != 22)
     return createLogMessage(
       GRADE.CRITICAL,
       'Syntax Error: Incorrect syntax to define fragment limits.'
     )
-  if (value[value.length - 3] != ']')
+  if (token[token.length - 3] != ']')
     return createLogMessage(
       GRADE.CRITICAL,
       'Syntax Error: Incorrect syntax to define fragment limits.'
     )
 
   // Check fragment min/max limit.
-  const limit = REGEX_FRAGMENT_LIMIT.exec(value)[1]
+  const limit = REGEX_FRAGMENT_LIMIT.exec(token)[1]
   if (limit.split(',').length < 2)
     return createLogMessage(
       GRADE.CRITICAL,
