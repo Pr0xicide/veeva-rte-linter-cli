@@ -56,3 +56,34 @@ test('Text user input tokens', () => {
   expect(validateTextInput('{{customText(10)}}')).toBe()
   expect(validateTextInput('{{customText(10|placeholder)}}')).toBe()
 })
+
+test('Dropdown input token syntax', () => {
+  expect(validateDropdown('{{customText[1|2]}}')).toBe()
+
+  expect(validateDropdown('{{customText]}}').grade).toBe(GRADE.CRITICAL)
+  expect(validateDropdown('{{customText[}}').grade).toBe(GRADE.CRITICAL)
+  expect(validateDropdown('{{customText}}').grade).toBe(GRADE.CRITICAL)
+  expect(validateDropdown('{customText}}').grade).toBe(GRADE.CRITICAL)
+  expect(validateDropdown('{{customText}').grade).toBe(GRADE.CRITICAL)
+  expect(validateDropdown('{{customText[[}}').grade).toBe(GRADE.CRITICAL)
+  expect(validateDropdown('{{customText]]}}').grade).toBe(GRADE.CRITICAL)
+  expect(validateDropdown('{{customText[[]]}}').grade).toBe(GRADE.CRITICAL)
+
+  expect(validateDropdown('{{customText[]}}').grade).toBe(GRADE.WARNING)
+})
+
+test('Dropdown options are valid', () => {
+  expect(validateDropdown('{{customText[https://google.com]}}').grade).toBe(
+    GRADE.WARNING
+  )
+  expect(validateDropdown('{{customText[<sup>&reg;</sup>]}}').grade).toBe(
+    GRADE.ERROR
+  )
+  expect(validateDropdown('{{customText[{{accLname}}]}}').grade).toBe(
+    GRADE.ERROR
+  )
+  expect(validateDropdown('{{customText[1|]}}').grade).toBe(GRADE.ERROR)
+  expect(validateDropdown('{{customText[{{customText[1]}}|2]}}').grade).toBe(
+    GRADE.CRITICAL
+  )
+})
