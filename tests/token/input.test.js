@@ -40,5 +40,19 @@ test('Standard user input tokens', () => {
 })
 
 test('Text user input tokens', () => {
-  expect(validateTextInput('{{customText(txt)}}')).toBe()
+  expect(validateTextInput('{{customText()}}').grade).toBe(GRADE.ERROR)
+  expect(validateTextInput('{{customText(txt|2|3)}}').grade).toBe(
+    GRADE.CRITICAL
+  )
+  expect(validateTextInput('{{customText(hi)}}').grade).toBe(GRADE.ERROR)
+  expect(validateTextInput('{{customText(-10)}}').grade).toBe(GRADE.ERROR)
+  expect(validateTextInput('{{customText(dfdf|placeholder)}}').grade).toBe(
+    GRADE.ERROR
+  )
+  expect(validateTextInput('{{customText(-10|placeholder)}}').grade).toBe(
+    GRADE.ERROR
+  )
+
+  expect(validateTextInput('{{customText(10)}}')).toBe()
+  expect(validateTextInput('{{customText(10|placeholder)}}')).toBe()
 })
