@@ -1,4 +1,4 @@
-const { GRADE, createLogMessage } = require('../util/logging')
+const { GRADE } = require('../util/logging')
 
 const standardContentTokens = [
   '{{accTitle}}',
@@ -14,15 +14,24 @@ const standardContentTokens = [
 ]
 
 const lint = (veevaToken) => {
-  const { value: token } = veevaToken
+  const { value: token, line } = veevaToken
 
   // Check if token is a valid short hand notation.
-  if (standardContentTokens.indexOf(token) >= 0) return
+  if (standardContentTokens.indexOf(token) >= 0) {
+    return {
+      grade: GRADE.PASS,
+      line,
+      token,
+      message: '',
+    }
+  }
 
-  return createLogMessage(
-    GRADE.ERROR,
-    'Content Token: Unidentified content token'
-  )
+  return {
+    grade: GRADE.ERROR,
+    line,
+    token,
+    message: 'Unidentified content token',
+  }
 }
 
 module.exports = {

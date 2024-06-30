@@ -1,7 +1,7 @@
 const {
   getDropdownOptions,
 } = require('veeva-approved-email-util/src/dropdowns')
-const { GRADE, createLogMessage } = require('../util/logging')
+const { GRADE } = require('../util/logging')
 
 const REGEX_DROPDOWN = /\{\{customText\[(.*?)\]\}\}/g
 const REGEX_TEXT = /\{\{customText\(\d+(?:\|[^)]+)?\)\}\}/
@@ -112,12 +112,9 @@ const containsNestedDropdowns = (token) => {
   return false
 }
 
-/**
- *
- * @param {String} token Veeva token
- * @returns {undefined|Object} if token is valid returns undefined, otherwise returns a log message object
- */
-const validateTextInput = (token) => {
+const lintTextInput = (veevaToken) => {
+  const { value: token, line } = veevaToken
+
   // Retrieve user input token paramters.
   const options = token.substring(
     '{{customText('.length,
@@ -127,103 +124,138 @@ const validateTextInput = (token) => {
 
   // To many parameters were defined.
   if (params.length > 2)
-    return createLogMessage(
-      GRADE.CRITICAL,
-      'Syntax Error: Incorrect definition of user input text token, expecting either {{customText(charLimit)}} or {{customText(charLimit|Placeholder text)}}.'
-    )
+    return {
+      grade: GRADE.ERROR,
+      line,
+      token,
+      message:
+        'Incorrect definition of user input text token, expecting either {{customText(charLimit)}} or {{customText(charLimit|Placeholder text)}}',
+    }
   // If one parameter is present, needs to be a number.
   else if (params.length === 1 && isNaN(params[0]))
-    return createLogMessage(
-      GRADE.ERROR,
-      'Syntax Error: Incorrect definition of user input text token, expecting {{customText(charLimit)}}.'
-    )
+    return {
+      grade: GRADE.ERROR,
+      line,
+      token,
+      message:
+        'Incorrect definition of user input text token, expecting {{customText(charLimit)}}',
+    }
   // If one parameter is present, character limit needs to be greater than 0.
   else if (params.length === 1 && params[0] <= 0)
-    return createLogMessage(
-      GRADE.ERROR,
-      'Syntax Error: Character limit needs to be greater than 0.'
-    )
+    return {
+      grade: GRADE.ERROR,
+      line,
+      token,
+      message: 'Character limit needs to be greater than 0',
+    }
   // If two parameters are present, first param needs to be a number.
   else if (params.length === 2 && isNaN(params[0]))
-    return createLogMessage(
-      GRADE.ERROR,
-      'Syntax Error: First parameter needs to be a number.'
-    )
+    return {
+      grade: GRADE.ERROR,
+      line,
+      token,
+      message: 'First parameter needs to be a number',
+    }
   // If two parameters are present, character limit needs to be greater than 0.
   else if (params.length === 2 && params[0] <= 0)
-    return createLogMessage(
-      GRADE.ERROR,
-      'Syntax Error: Character limit needs to be greater than 0.'
-    )
+    return {
+      grade: GRADE.ERROR,
+      line,
+      token,
+      message: 'Character limit needs to be greater than 0',
+    }
 
-  return
+  return {
+    grade: GRADE.PASS,
+    line,
+    token,
+    message: '',
+  }
 }
 
-const validateDropdown = (token) => {
+const lintDropdown = (veevaToken) => {
+  const { value: token, line } = veevaToken
+
   // Check syntax of dropdown token.
   if (
     token.indexOf('{{customText[') < 0 ||
     token.substring(token.length - 3) !== ']}}'
   ) {
-    return createLogMessage(
-      GRADE.CRITICAL,
-      'Syntax Error: Dropdown token syntax is not defined correctly. Expecting {{customText[...]}}'
-    )
+    return {
+      grade: GRADE.ERROR,
+      line,
+      token,
+      message: 'Dropdown token syntax is not defined correctly',
+    }
   } else if (token.indexOf('[[') > 0 || token.indexOf(']]') > 0) {
-    return createLogMessage(
-      GRADE.CRITICAL,
-      'Syntax Error: Double square brackets detected in dropdown token.'
-    )
+    return {
+      grade: GRADE.ERROR,
+      line,
+      token,
+      message: 'Double square brackets detected in dropdown token',
+    }
   } else if (token === '{{customText[]}}') {
-    return createLogMessage(
-      GRADE.WARNING,
-      'Warning: Dropdown contains no options. This will not cause any errors when the email is deployed.'
-    )
+    return {
+      grade: GRADE.WARNING,
+      line,
+      token,
+      message: 'Dropdown token contains no options',
+    }
   }
 
   const dropdownOptions = getDropdownOptions(token)
 
-  // If any options contains any URLs to websites.
-  if (dropdownContainLinks(dropdownOptions)) {
-    return createLogMessage(
-      GRADE.WARNING,
-      'Warning: 1 or more dropdown option contains a URL, these will be automatically linked when deployed. See more https://www.litmus.com/blog/how-to-remove-blue-links-in-html-emails'
-    )
-  }
-
   // If any options contains any HTML tags
-  else if (dropdownContainHTMLTags(dropdownOptions)) {
-    return createLogMessage(
-      GRADE.ERROR,
-      'Syntax Error: 1 or more dropdown option contains a HTML tags, these will not be rendered when deployed.'
-    )
+  if (dropdownContainHTMLTags(dropdownOptions)) {
+    return {
+      grade: GRADE.ERROR,
+      line,
+      token,
+      message: 'Dropdown options cannot have HTML tags',
+    }
   }
 
+  // If any options contains any URLs to websites.
+  else if (dropdownContainLinks(dropdownOptions))
+    return {
+      grade: GRADE.WARNING,
+      line,
+      token,
+      message: 'One or more dropdown option contains a URL',
+    }
   // If any options contains content tokens.
-  else if (!validDropdownContentTokens(dropdownOptions)) {
-    return createLogMessage(
-      GRADE.ERROR,
-      'Syntax Error: 1 or more dropdown option contains the wrong syntax for content tokens in dropdowns.'
-    )
-  }
-
+  else if (!validDropdownContentTokens(dropdownOptions))
+    return {
+      grade: GRADE.ERROR,
+      line,
+      token,
+      message:
+        'One or more dropdown option contains the wrong syntax for content tokens',
+    }
   // If any options are blank.
-  else if (!validDropdownEmptyOptionDefined(dropdownOptions)) {
-    return createLogMessage(
-      GRADE.ERROR,
-      'Syntax Error: 1 or more dropdown option contains the wrong definition for a blank option.'
-    )
-  }
-
+  else if (!validDropdownEmptyOptionDefined(dropdownOptions))
+    return {
+      grade: GRADE.ERROR,
+      line,
+      token,
+      message: 'A dropdown option needs to have a minimum of 1 character',
+    }
   // If any options contain another dropdown
-  else if (containsNestedDropdowns(token)) {
-    return createLogMessage(
-      GRADE.CRITICAL,
-      'Syntax Error: Detected a dropdown defined within a dropdown.'
-    )
-  }
+  else if (containsNestedDropdowns(token))
+    return {
+      grade: GRADE.ERROR,
+      line,
+      token,
+      message:
+        'Cannot have dropdown tokens nested within another dropdown token',
+    }
 
-  return
+  return {
+    grade: GRADE.PASS,
+    line,
+    token,
+    message: '',
+  }
 }
 
 /**
@@ -233,32 +265,46 @@ const validateDropdown = (token) => {
  * @returns {undefined|Object} if token is valid returns undefined, otherwise returns a log message object
  */
 const lint = (veevaToken) => {
-  const { value: token } = veevaToken
+  const { value: token, line } = veevaToken
 
   // Check standard user input tokens with no additional parameters.
-  if (standardTokens.indexOf(token) >= 0) return
+  if (standardTokens.indexOf(token) >= 0)
+    return {
+      grade: GRADE.PASS,
+      line,
+      token,
+      message: '',
+    }
 
   // Determine the user input token type.
   const inputType = determineUserInputType(token)
   switch (inputType) {
     case INPUT_TYPE.UNKNOWN:
-      return createLogMessage(
-        GRADE.CRITICAL,
-        'Syntax Error: Incorrect syntax for user tokens'
-      )
+      return {
+        grade: GRADE.ERROR,
+        line,
+        token,
+        message: 'Incorrect syntax for user tokens',
+      }
     case INPUT_TYPE.TEXT:
-      return validateTextInput(token)
+      return lintTextInput(veevaToken)
     case INPUT_TYPE.DROPDOWN:
-      return validateDropdown(token)
+      return lintDropdown(veevaToken)
   }
+
   // Passed
-  return
+  return {
+    grade: GRADE.PASS,
+    line,
+    token,
+    message: '',
+  }
 }
 
 module.exports = {
   INPUT_TYPE,
-  validateTextInput,
-  validateDropdown,
   determineUserInputType,
+  lintTextInput,
+  lintDropdown,
   lint,
 }

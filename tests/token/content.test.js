@@ -13,14 +13,14 @@ const lint = (token) => {
 }
 
 test('Short hand notation tokens', () => {
-  expect(lint('{{accTitle}}')).toBe(undefined)
-  expect(lint('{{accFname}}')).toBe(undefined)
-  expect(lint('{{accLname}}')).toBe(undefined)
-  expect(lint('{{accCredentials}}')).toBe(undefined)
-  expect(lint('{{userEmailAddress}}')).toBe(undefined)
-  expect(lint('{{userName}}')).toBe(undefined)
-  expect(lint('{{userPhoto}}')).toBe(undefined)
-  expect(lint('{{parentCallDatetime}}')).toBe(undefined)
+  expect(lint('{{accTitle}}').grade).toBe(GRADE.PASS)
+  expect(lint('{{accFname}}').grade).toBe(GRADE.PASS)
+  expect(lint('{{accLname}}').grade).toBe(GRADE.PASS)
+  expect(lint('{{accCredentials}}').grade).toBe(GRADE.PASS)
+  expect(lint('{{userEmailAddress}}').grade).toBe(GRADE.PASS)
+  expect(lint('{{userName}}').grade).toBe(GRADE.PASS)
+  expect(lint('{{userPhoto}}').grade).toBe(GRADE.PASS)
+  expect(lint('{{parentCallDatetime}}').grade).toBe(GRADE.PASS)
 })
 
 test('Invalid content tokens', () => {

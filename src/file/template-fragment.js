@@ -1,4 +1,4 @@
-const { GRADE, createLogMessage } = require('../util/logging')
+const { GRADE } = require('../util/logging')
 const { TYPES } = require('../util/token-types')
 
 const validTokenTypes = [TYPES.CONTENT]
@@ -8,8 +8,8 @@ const invalidTokens = [
   '{{EventSession}}',
   '{{EventSpeaker}}',
   '{{requiresReview}}',
-  // "{{insertEngageAndZoomJoinURL[Language Code]}}",
-  // "{{insertZoomDialInNumbers[Language Code]}}",
+  // "{{insertEngageAndZoomJoinURL[Language Code]}}", // Functionality
+  // "{{insertZoomDialInNumbers[Language Code]}}", // Functionality
 ]
 
 /**
@@ -21,15 +21,15 @@ const validate = (tokens) => {
   const logs = []
 
   for (let i = 0; i < tokens.length; i++) {
-    const { type, name } = tokens[i]
+    const { type, value: token, line } = tokens[i]
 
     if (!validTokenTypes.includes(type)) {
-      logs.push(
-        createLogMessage(
-          GRADE.CRITICAL,
-          `Token "${name}" is not supported in template fragments.`
-        )
-      )
+      logs.push({
+        grade: GRADE.ERROR,
+        line,
+        token,
+        message: `Token "${token}" is not supported in template fragments`,
+      })
     }
   }
 

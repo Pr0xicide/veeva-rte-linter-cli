@@ -8,21 +8,22 @@ const { TYPES } = require('../../src/util/token-types')
 const lint = (token) => {
   return validate({
     type: TYPES.VAULT,
+    line: 1,
     value: token,
   })
 }
 
 test('Standard vault tokens', () => {
-  expect(lint('{{engageLink}}')).toBe()
-  expect(lint('{{ISILink}}')).toBe()
-  expect(lint('{{PieceLink}}')).toBe()
-  expect(lint('{{PILink}}')).toBe()
-  expect(lint('{{surveyLink}}')).toBe()
+  expect(lint('{{engageLink}}').grade).toBe(GRADE.PASS)
+  expect(lint('{{ISILink}}').grade).toBe(GRADE.PASS)
+  expect(lint('{{PieceLink}}').grade).toBe(GRADE.PASS)
+  expect(lint('{{PILink}}').grade).toBe(GRADE.PASS)
+  expect(lint('{{surveyLink}}').grade).toBe(GRADE.PASS)
 })
 
 test('Vault document tokens with IDs', () => {
-  expect(lint('{{$20}}')).toBe()
-  expect(lint('{{$sdf}}').grade).toBe(GRADE.CRITICAL)
-  expect(lint('{{$s23df}}').grade).toBe(GRADE.CRITICAL)
-  expect(lint('{{$ten}}').grade).toBe(GRADE.CRITICAL)
+  expect(lint('{{$20}}').grade).toBe(GRADE.PASS)
+  expect(lint('{{$sdf}}').grade).toBe(GRADE.ERROR)
+  expect(lint('{{$s23df}}').grade).toBe(GRADE.ERROR)
+  expect(lint('{{$ten}}').grade).toBe(GRADE.ERROR)
 })

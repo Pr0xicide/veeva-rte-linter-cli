@@ -20,15 +20,15 @@ const validate = (tokens) => {
   const logs = []
 
   for (let i = 0; i < tokens.length; i++) {
-    const { type, name } = tokens[i]
+    const { type, value: token, line } = tokens[i]
 
     if (!validTokenTypes.includes(type)) {
-      logs.push(
-        createLogMessage(
-          GRADE.CRITICAL,
-          `Token "${name}" is not supported in email fragments.`
-        )
-      )
+      logs.push({
+        grade: GRADE.ERROR,
+        line,
+        token,
+        message: `Token "${token}" is not supported in email fragments`,
+      })
     }
   }
 

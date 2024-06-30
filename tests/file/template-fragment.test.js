@@ -10,12 +10,16 @@ test('Tokens that are supported in template fragments', () => {
 
 test("Tokens that aren't supported in email fragments", () => {
   const tokens = [
-    { type: TYPES.CONTENT, name: '{{accLname}}' },
-    { type: TYPES.EMAIL_FRAGMENT, name: '{{insertEmailFragments}}' },
-    { type: TYPES.TEMPLATE_FRAGMENT, name: '{{emailTemplateFragment}}' },
+    { type: TYPES.CONTENT, line: 1, name: '{{accLname}}' },
+    { type: TYPES.EMAIL_FRAGMENT, line: 1, name: '{{insertEmailFragments}}' },
+    {
+      type: TYPES.TEMPLATE_FRAGMENT,
+      line: 1,
+      name: '{{emailTemplateFragment}}',
+    },
   ]
 
   expect(validate(tokens).length).toBe(2)
-  expect(validate(tokens)[0].grade).toBe(GRADE.CRITICAL)
-  expect(validate(tokens)[1].grade).toBe(GRADE.CRITICAL)
+  expect(validate(tokens)[0].grade).toBe(GRADE.ERROR)
+  expect(validate(tokens)[1].grade).toBe(GRADE.ERROR)
 })

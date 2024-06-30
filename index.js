@@ -4,7 +4,7 @@ const {
   main: { getVeevaTokens },
 } = require('veeva-approved-email-util')
 const { FILE_TYPES } = require('./src/util/cli')
-const { MESSAGE_LEVELS } = require('./src/util/logging')
+const { MESSAGE_LEVELS, GRADE } = require('./src/util/logging')
 const { determineTokenType } = require('veeva-approved-email-util/src/main')
 const { lintVeevaTokens } = require('./src/token/lint')
 
@@ -64,7 +64,7 @@ const validateCLIArugments = (CLIAgruments) => {
 const lintHTMLFile = (fileType, filePath) => {
   try {
     fs.readFile(filePath, 'utf8', (err, sourceHTML) => {
-      if (err) throw new Error('')
+      if (err) throw new Error(`Failed to read file "${filePath}"`)
 
       // Gather all tokens inside of the HTML source code.
       const veevaTokens = getVeevaTokens(sourceHTML)
@@ -78,17 +78,25 @@ const lintHTMLFile = (fileType, filePath) => {
 
       // Lint Veeva tokens.
       logger.info(`Linting all ${veevaTokens.length} Veeva tokens found`)
-      console.log(veevaTokens)
-      lintVeevaTokens(veevaTokens)
+      const veevaTokensLog = lintVeevaTokens(veevaTokens)
 
       // Lint file type (template, fragment, template fragment).
       logger.info(`Linting Veeva tokens with the file type provided`)
 
-      // Log final report to user.
+      // Output messages
+      outputLog(veevaTokensLog)
     })
-  } catch (error) {
-    logger.error(`Failed to read file at "${fileType}"`)
-  }
+  } catch (error) {}
+}
+
+const outputLog = (messages) => {
+  messages.forEach((msg) => {
+    const { grade, line, token, message } = msg
+    const output = `line: ${line}\n\t token: ${token}\n\t ${message}`
+
+    if (grade === GRADE.WARNING) logger.warn(output)
+    else if (grade === GRADE.ERROR) logger.error(output)
+  })
 }
 
 validateCLIArugments(process.argv)

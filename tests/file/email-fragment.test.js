@@ -16,6 +16,6 @@ test("Tokens that aren't supported in email fragments", () => {
   ]
 
   expect(validate(tokens).length).toBe(2)
-  expect(validate(tokens)[0].grade).toBe(GRADE.CRITICAL)
-  expect(validate(tokens)[1].grade).toBe(GRADE.CRITICAL)
+  expect(validate(tokens)[0].grade).toBe(GRADE.ERROR)
+  expect(validate(tokens)[1].grade).toBe(GRADE.ERROR)
 })
