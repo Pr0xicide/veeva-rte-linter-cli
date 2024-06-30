@@ -1,15 +1,15 @@
 const { GRADE } = require('../../src/util/logging')
 const {
   INPUT_TYPE,
-  validate: lint,
+  lint: validate,
   determineUserInputType,
   validateDropdown,
   validateTextInput,
 } = require('../../src/token/user-input')
 const { TYPES } = require('veeva-approved-email-util/src/token-types')
 
-const validate = (token) => {
-  return lint({
+const lint = (token) => {
+  return validate({
     type: TYPES.USER_INPUT,
     value: token,
   })
@@ -34,9 +34,9 @@ test('User input type detection', () => {
 })
 
 test('Standard user input tokens', () => {
-  expect(validate('{{customText}}')).toBe()
-  expect(validate('{{customText:Required}}')).toBe()
-  expect(validate('{{customRichText}}')).toBe()
+  expect(lint('{{customText}}')).toBe()
+  expect(lint('{{customText:Required}}')).toBe()
+  expect(lint('{{customRichText}}')).toBe()
 })
 
 test('Text user input tokens', () => {

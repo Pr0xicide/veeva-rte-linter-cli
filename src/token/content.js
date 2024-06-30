@@ -13,7 +13,7 @@ const standardContentTokens = [
   // "{{User.MobilePhone}}",
 ]
 
-const validate = (veevaToken) => {
+const lint = (veevaToken) => {
   const { value: token } = veevaToken
 
   // Check if token is a valid short hand notation.
@@ -26,5 +26,5 @@ const validate = (veevaToken) => {
 }
 
 module.exports = {
-  validate,
+  lint,
 }

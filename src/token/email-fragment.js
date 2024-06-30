@@ -3,7 +3,7 @@ const { GRADE, createLogMessage } = require('../util/logging')
 const REGEX_FRAGMENT_LIMIT = /\[(.*?)\]/
 const STANDARD_FRAGMENT_TOKEN = '{{insertEmailFragments}}'
 
-const validate = (veevaToken) => {
+const lint = (veevaToken) => {
   const { value: token } = veevaToken
 
   // If no fragment limit is defined, and standard token is defined correctly.
@@ -54,5 +54,5 @@ const validate = (veevaToken) => {
 }
 
 module.exports = {
-  validate,
+  lint,
 }

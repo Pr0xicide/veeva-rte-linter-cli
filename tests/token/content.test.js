@@ -2,34 +2,34 @@
  * Test suite for validating Veeva content tokens.
  */
 const { GRADE } = require('../../src/util/logging')
-const { validate: lint } = require('../../src/token/content')
+const { lint: validate } = require('../../src/token/content')
 const { TYPES } = require('../../src/util/token-types')
 
-const validate = (token) => {
-  return lint({
+const lint = (token) => {
+  return validate({
     type: TYPES.CONTENT,
     value: token,
   })
 }
 
 test('Short hand notation tokens', () => {
-  expect(validate('{{accTitle}}')).toBe(undefined)
-  expect(validate('{{accFname}}')).toBe(undefined)
-  expect(validate('{{accLname}}')).toBe(undefined)
-  expect(validate('{{accCredentials}}')).toBe(undefined)
-  expect(validate('{{userEmailAddress}}')).toBe(undefined)
-  expect(validate('{{userName}}')).toBe(undefined)
-  expect(validate('{{userPhoto}}')).toBe(undefined)
-  expect(validate('{{parentCallDatetime}}')).toBe(undefined)
+  expect(lint('{{accTitle}}')).toBe(undefined)
+  expect(lint('{{accFname}}')).toBe(undefined)
+  expect(lint('{{accLname}}')).toBe(undefined)
+  expect(lint('{{accCredentials}}')).toBe(undefined)
+  expect(lint('{{userEmailAddress}}')).toBe(undefined)
+  expect(lint('{{userName}}')).toBe(undefined)
+  expect(lint('{{userPhoto}}')).toBe(undefined)
+  expect(lint('{{parentCallDatetime}}')).toBe(undefined)
 })
 
 test('Invalid content tokens', () => {
-  expect(validate('{accTitle}}').grade).toBe(GRADE.ERROR)
-  expect(validate('{{accFname}').grade).toBe(GRADE.ERROR)
-  expect(validate('{{{accLname}}').grade).toBe(GRADE.ERROR)
-  expect(validate('{{accCredentials}}}').grade).toBe(GRADE.ERROR)
-  expect(validate('{[userEmailAddress]}').grade).toBe(GRADE.ERROR)
-  expect(validate('{{USERNAME}}').grade).toBe(GRADE.ERROR)
-  expect(validate('{{USERPhoto}}').grade).toBe(GRADE.ERROR)
-  expect(validate('{{parentCallDateTime}}').grade).toBe(GRADE.ERROR)
+  expect(lint('{accTitle}}').grade).toBe(GRADE.ERROR)
+  expect(lint('{{accFname}').grade).toBe(GRADE.ERROR)
+  expect(lint('{{{accLname}}').grade).toBe(GRADE.ERROR)
+  expect(lint('{{accCredentials}}}').grade).toBe(GRADE.ERROR)
+  expect(lint('{[userEmailAddress]}').grade).toBe(GRADE.ERROR)
+  expect(lint('{{USERNAME}}').grade).toBe(GRADE.ERROR)
+  expect(lint('{{USERPhoto}}').grade).toBe(GRADE.ERROR)
+  expect(lint('{{parentCallDateTime}}').grade).toBe(GRADE.ERROR)
 })

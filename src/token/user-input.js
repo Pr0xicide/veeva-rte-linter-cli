@@ -181,7 +181,6 @@ const validateDropdown = (token) => {
     )
   }
 
-  //
   const dropdownOptions = getDropdownOptions(token)
 
   // If any options contains any URLs to websites.
@@ -233,7 +232,7 @@ const validateDropdown = (token) => {
  * @param {Object} veevaToken
  * @returns {undefined|Object} if token is valid returns undefined, otherwise returns a log message object
  */
-const validate = (veevaToken) => {
+const lint = (veevaToken) => {
   const { value: token } = veevaToken
 
   // Check standard user input tokens with no additional parameters.
@@ -261,5 +260,5 @@ module.exports = {
   validateTextInput,
   validateDropdown,
   determineUserInputType,
-  validate,
+  lint,
 }

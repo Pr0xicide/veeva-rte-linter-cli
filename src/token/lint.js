@@ -1,8 +1,10 @@
 const { TYPES } = require('../util/token-types')
-const { validate: validateEmailFragmentToken } = require('./email-fragment')
+const { lint: lintEmailFragmentToken } = require('./email-fragment')
+const { lint: lintUserInputToken } = require('./user-input')
 
 const TOKEN_VALIDATORS = {
-  'email-fragment': validateEmailFragmentToken,
+  'email-fragment': lintEmailFragmentToken,
+  'user-input': lintUserInputToken,
 }
 
 const lintVeevaTokens = (veevaTokens) => {
