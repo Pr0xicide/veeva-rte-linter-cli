@@ -1,0 +1,9 @@
+.husky
+.husky/*
+
+tests
+tests/*
+**/*.test.js
+
+_test-files
+_test-files/*

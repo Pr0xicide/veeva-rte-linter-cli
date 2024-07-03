@@ -1,4 +1,4 @@
-# Veeva Rep-Triggered Email (RTE) Linter
+# Veeva Rep-Triggered Email (RTE) Linter CLI
 
 Veeva RTE linter for the development RTE HTML files. This is to catch as many issues with the HTML source code before deploying to Veeva Vault Promomats.
 
