@@ -18,8 +18,8 @@ const {
 
 const VEEVA_TOKEN_LINTERS = Object.freeze({
   content: lintContentTokens,
-  'email-fragment': lintEmailFragmentTokens,
-  'user-input': lintUserInputTokens,
+  'email fragment': lintEmailFragmentTokens,
+  'user input': lintUserInputTokens,
   vault: lintVaultTokens,
 })
 

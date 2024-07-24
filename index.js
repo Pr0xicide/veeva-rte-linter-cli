@@ -81,23 +81,18 @@ const lintHTMLFile = (fileType, filePath) => {
 
       // Lint Veeva tokens.
       logger.info(`Linting all ${veevaTokens.length} Veeva tokens found`)
-      const veevaTokensLog = lintVeevaTokens(veevaTokens)
-      outputLog(veevaTokensLog)
+      const veevaTokenMsgs = lintVeevaTokens(veevaTokens)
+      outputLog(veevaTokenMsgs)
 
       // Lint file type (template, fragment, template fragment).
       logger.info(`Linting file type`)
-      const fileLog = lintFile(FILE_TYPES[fileType], veevaTokens)
-      outputLog(fileLog)
+      const veevaFileMsgs = lintFile(FILE_TYPES[fileType], veevaTokens)
+      outputLog(veevaFileMsgs)
 
-      const messageCount = veevaTokensLog.length + fileLog.length
-      if (messageCount === 0)
-        logger.info(
-          `Done linting "${filePath}" with ${messageCount} issues/warnings found`
-        )
-      else
-        logger.error(
-          `Done linting "${filePath}" with ${messageCount} issues/warnings found`
-        )
+      const messageCount = veevaTokenMsgs.length + veevaFileMsgs.length
+      logger.info(
+        `Done linting "${filePath}" with ${messageCount} issues/warnings found`
+      )
     })
   } catch (error) {
     console.error(error)
@@ -115,8 +110,14 @@ const outputLog = (messages) => {
     const { grade, line, token, message } = msg
     const output = `line: ${line}\t${token}\n\t ${message}\n`
 
-    if (grade === GRADE.WARNING) logger.warn(output)
-    else if (grade === GRADE.ERROR) logger.error(output)
+    switch (grade) {
+      case GRADE.WARNING:
+        logger.warn(output)
+        break
+      case GRADE.ERROR:
+        logger.error(output)
+        break
+    }
   })
 }
 
