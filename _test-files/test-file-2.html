@@ -85,7 +85,7 @@
           role="presentation">
           <tr>
             <td style="padding-bottom: 20px;">
-              {{customText[Hello|Good morning|Good afternoon|Dear]}} {{customText[Mr|Mrs|Ms|Miss|Dr|]}} {{accLname}},
+              {{customText[Hello|Good morning|Good afternoon|Dear|]}} {{customText[Mr|Mrs|Ms|Miss|Dr|<strong>Prof</strong>]}} {{accfname}} {{accLname}},
             </td>
           </tr>
         </table>
@@ -145,8 +145,7 @@
               {{userName}}<br>
               {{fakeToken}}<br>
               <a href="#" style="color:#000000; cursor: auto; text-decoration: none;">{{User.MobilePhone}}</a><br>
-              <a href="mailto:{{userEmailAddress}}"
-                style="color: #1462ac; text-decoration: underline;">{{userEmailAddress}}</a>
+              <a href="mailto:{{userEmailAddress}}" style="color: #1462ac; text-decoration: underline;">{{userEmailAddress}}</a>
             </td>
           </tr>
         </table>
