@@ -23,7 +23,7 @@
   ],
   "dependencies": {
     "node-html-parser": "^6.1.12",
-    "veeva-approved-email-util": "^0.3.4",
+    "veeva-approved-email-util": "^0.4.5",
     "winston": "^3.11.0"
   },
   "devDependencies": {
