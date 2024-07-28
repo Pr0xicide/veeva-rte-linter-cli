@@ -108,7 +108,7 @@ const lintHTMLFile = (fileType, filePath) => {
 const outputLog = (messages) => {
   messages.forEach((msg) => {
     const { grade, line, token, message } = msg
-    const output = `line: ${line}\t${token}\n\t ${message}\n`
+    const output = msg.getMessage()
 
     switch (grade) {
       case GRADE.WARNING:

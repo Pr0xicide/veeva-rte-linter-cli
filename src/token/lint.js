@@ -15,6 +15,9 @@ const {
 const {
   lint: lintVaultTokens,
 } = require('veeva-approved-email-util/lib/linting/token/vault')
+const {
+  UnknownTokenMessage,
+} = require('veeva-approved-email-util/lib/linting/message')
 
 const VEEVA_TOKEN_LINTERS = Object.freeze({
   content: lintContentTokens,
@@ -37,13 +40,12 @@ const lintVeevaTokens = (veevaTokens) => {
 
     // Report any unknown tokens.
     if (category === CATEGORY_TYPES.UNKNOWN) {
-      logs.push({
-        grade: GRADE.ERROR,
+      const msg = new UnknownTokenMessage({
         line,
         token,
-        message:
-          'Unknown token, refer to https://crmhelp.veeva.com/doc/Content/CRM_topics/Multichannel/ApprovedEmail/ManageCreateContent/CreatingContent/ConfigTokens.htm for a full list of supported tokens',
       })
+
+      logs.push(msg)
     }
 
     // If token linter is defined.
