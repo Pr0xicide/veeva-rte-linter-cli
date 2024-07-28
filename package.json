@@ -1,0 +1,37 @@
+{
+  "name": "veeva-rte-linter-cli",
+  "version": "0.1.0",
+  "description": "A rep-triggered email (RTE) HTML linter to report and identify issues when developing RTE files.",
+  "author": "Jayvin Duong",
+  "license": "MIT",
+  "main": "index.js",
+  "bin": {
+    "lint-veeva-rte": "index.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/Pr0xicide/veeva-rte-linter"
+  },
+  "scripts": {
+    "test": "jest",
+    "dev": "jest --watch",
+    "lint": "node index.js",
+    "prepare": "husky"
+  },
+  "keywords": [
+    "veeva"
+  ],
+  "dependencies": {
+    "node-html-parser": "^6.1.12",
+    "veeva-approved-email-util": "^0.4.5",
+    "winston": "^3.11.0"
+  },
+  "devDependencies": {
+    "husky": "^9.0.11",
+    "jest": "^29.7.0",
+    "prettier": "^3.2.5"
+  },
+  "lint-staged": {
+    "*.{js,md}": "prettier --write"
+  }
+}
