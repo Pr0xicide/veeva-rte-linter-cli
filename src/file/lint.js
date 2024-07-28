@@ -27,11 +27,11 @@ const VEEVA_FILE_LINTERS = Object.freeze({
  * @param {Array<{line:number, category:CATEGORY_TYPES, token:String}>} veevaTokens array tokens to lint
  * @returns {Array<{line:number, grade:GRADE, token:String, message:String}>} array of objects containing info about each token
  */
-const lintFile = (fileType, veevaTokens) => {
+const lintSourceFile = (fileType, veevaTokens) => {
   const logs = VEEVA_FILE_LINTERS[fileType](veevaTokens)
   return logs
 }
 
 module.exports = {
-  lintFile,
+  lintSourceFile,
 }
