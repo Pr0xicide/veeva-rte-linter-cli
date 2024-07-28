@@ -1,6 +1,6 @@
 {
   "name": "veeva-rte-linter-cli",
-  "version": "0.1.0",
+  "version": "0.2.0",
   "description": "A rep-triggered email (RTE) HTML linter to report and identify issues when developing RTE files.",
   "author": "Jayvin Duong",
   "license": "MIT",
@@ -22,7 +22,6 @@
     "veeva"
   ],
   "dependencies": {
-    "node-html-parser": "^6.1.12",
     "veeva-approved-email-util": "^0.4.5",
     "winston": "^3.11.0"
   },

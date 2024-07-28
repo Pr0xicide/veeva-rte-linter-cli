@@ -13,8 +13,12 @@ const { GRADE } = require('veeva-approved-email-util/lib/linting/grading')
 const { FILE_TYPES } = require('./src/util/cli')
 const { MESSAGE_LEVELS } = require('./src/util/logging')
 const { lintVeevaTokens } = require('./src/token/lint')
-const { lintFile } = require('./src/file/lint')
+const { lintSourceFile } = require('./src/file/lint')
+const {
+  TokenMessage,
+} = require('veeva-approved-email-util/lib/linting/message')
 
+const MAX_FILE_SIZE = 131072
 const logger = createLogger({
   levels: MESSAGE_LEVELS,
   format: format.cli(),
@@ -78,7 +82,7 @@ const lintHTMLFile = (fileType, filePath) => {
         `Retrieved ${veevaTokens.length} Veeva email tokens in "${filePath}"`
       )
 
-      // Determine token type.
+      // Determine token category.
       logger.info(`Determining token categories found in "${filePath}"`)
       determineTokenCategory(veevaTokens)
 
@@ -87,14 +91,24 @@ const lintHTMLFile = (fileType, filePath) => {
       const veevaTokenMsgs = lintVeevaTokens(veevaTokens)
       outputLog(veevaTokenMsgs)
 
-      // Lint file type (template, fragment, template fragment).
+      // Lint file type (template, email fragment, template fragment).
       logger.info(`Linting file type`)
-      const veevaFileMsgs = lintFile(FILE_TYPES[fileType], veevaTokens)
+      const veevaFileMsgs = lintSourceFile(FILE_TYPES[fileType], veevaTokens)
       outputLog(veevaFileMsgs)
 
-      const messageCount = veevaTokenMsgs.length + veevaFileMsgs.length
+      let messageCount = veevaTokenMsgs.length + veevaFileMsgs.length
+
+      // Detect file size of email template.
+      const fileSize = fs.statSync(filePath).size
+      if (fileType === 'et' && fileSize > MAX_FILE_SIZE) {
+        logger.error(
+          `Email template HTML file "${filePath}" exceeds the maximum limit of ${MAX_FILE_SIZE} characters https://support.veeva.com/hc/en-us/articles/11330539418523-What-is-the-Maximum-Length-on-Veeva-Approved-Emails-in-Vault`
+        )
+        messageCount++
+      }
+
       logger.info(
-        `Done linting "${filePath}" with ${messageCount} issues/warnings found`
+        `Done linting "${filePath}" with ${messageCount} error(s)/warning(s) found`
       )
     })
   } catch (error) {
@@ -105,7 +119,7 @@ const lintHTMLFile = (fileType, filePath) => {
 /**
  * Outputs feedback to the terminal window.
  *
- * @param {Array<object>} messages Array of messages to output
+ * @param {Array<TokenMessage>} messages Array of messages to output
  * @returns {void}
  */
 const outputLog = (messages) => {
