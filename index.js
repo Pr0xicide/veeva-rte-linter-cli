@@ -36,31 +36,25 @@ const validateCLIArugments = (CLIAgruments) => {
   const fileType = parameters[0]
   const filePath = parameters[1]
 
-  // Incorrect number of arugments provided.
+  // Validate CLI arguments.
   if (parameters.length < 2) {
     logger.error(
       `Invalid number of arguments provided. Expecting 2 arguments but received ${parameters.length}.`
     )
-    return
-  }
-
-  // Validate RTE file type parameter.
-  if (!FILE_TYPES[fileType]) {
+    process.exit(1)
+  } else if (!FILE_TYPES[fileType]) {
     logger.error(
       `Invalid file type argument "${fileType}" provided, expecting either "et", "ef", or "tf".`
     )
-    return
-  }
-
-  // Validate file parameter.
-  if (filePath.indexOf('.html') < 0) {
+    process.exit(1)
+  } else if (filePath.indexOf('.html') < 0) {
     logger.error(
       'Invalid file path argument, expecting a path to point a HTML file.'
     )
-    return
+    process.exit(1)
   }
 
-  // Valid CLI arguments, begin linting.
+  // Begin linting HTML file.
   lintHTMLFile(fileType, filePath)
 }
 
@@ -107,12 +101,16 @@ const lintHTMLFile = (fileType, filePath) => {
         messageCount++
       }
 
-      logger.info(
-        `Done linting "${filePath}" with ${messageCount} error(s)/warning(s) found`
-      )
+      if (messageCount > 0) {
+        logger.info(
+          `Done linting "${filePath}" with ${messageCount} error(s)/warning(s) found`
+        )
+        process.exit(1)
+      }
     })
   } catch (error) {
     console.error(error)
+    process.exit(1)
   }
 }
 
@@ -124,7 +122,7 @@ const lintHTMLFile = (fileType, filePath) => {
  */
 const outputLog = (messages) => {
   messages.forEach((msg) => {
-    const { grade, line, token, message } = msg
+    const { grade } = msg
     const output = msg.getMessage()
 
     switch (grade) {
