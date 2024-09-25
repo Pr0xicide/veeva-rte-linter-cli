@@ -15,20 +15,20 @@ npm install veeva-rte-linter-cli -g
 To start linting run the following command in your terminal after installing:
 
 ```bash
-lint-veeva-rte {FILE-TYPE} {PATH-TO-HTML-FILE}
+lint-veeva-rte {PATH-TO-HTML-FILE} -type {FILE-TYPE}
 ```
-
-### File type
-
-<span style="color: red; font-weight: bold;">Case-sensitive</span>. Use one of the following options below.
-
-- `et` for [email templates](https://crmhelp.veeva.com/doc/Content/CRM_topics/Multichannel/ApprovedEmail/InitialConfig/Components.htm#EmailTemplates)
-- `et` for [email fragments](https://crmhelp.veeva.com/doc/Content/CRM_topics/Multichannel/ApprovedEmail/InitialConfig/Components.htm#EmailFragments)
-- `tf` for [template fragments](https://crmhelp.veeva.com/doc/Content/CRM_topics/Multichannel/ApprovedEmail/InitialConfig/Components.htm#TemplateFragments)
 
 ### Path to HTML File
 
 Directory leading to the HTML file to lint.
+
+### File Type
+
+**Case-sensitive**. Use **one** of the following options below.
+
+- `et` for [email templates](https://crmhelp.veeva.com/doc/Content/CRM_topics/Multichannel/ApprovedEmail/InitialConfig/Components.htm#EmailTemplates)
+- `et` for [email fragments](https://crmhelp.veeva.com/doc/Content/CRM_topics/Multichannel/ApprovedEmail/InitialConfig/Components.htm#EmailFragments)
+- `tf` for [template fragments](https://crmhelp.veeva.com/doc/Content/CRM_topics/Multichannel/ApprovedEmail/InitialConfig/Components.htm#TemplateFragments)
 
 ## Additional Resources
 

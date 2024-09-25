@@ -6,7 +6,7 @@
   "license": "MIT",
   "main": "index.js",
   "bin": {
-    "lint-veeva-rte": "index.js"
+    "lint-veeva-rte": "bin/index.js"
   },
   "repository": {
     "type": "git",
@@ -15,7 +15,7 @@
   "scripts": {
     "test": "jest",
     "dev": "jest --watch",
-    "lint": "node index.js",
+    "lint": "node bin/index.js",
     "prepare": "husky"
   },
   "keywords": [
