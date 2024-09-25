@@ -1,6 +1,3 @@
-#!/usr/bin/env node
-'use strict'
-
 const fs = require('fs')
 const { createLogger, format, transports } = require('winston')
 const {
@@ -9,16 +6,17 @@ const {
 const {
   determineTokenCategory,
 } = require('veeva-approved-email-util/lib/tokens/category')
-const { GRADE } = require('veeva-approved-email-util/lib/linting/grading')
-const { FILE_TYPES } = require('./src/util/cli')
-const { MESSAGE_LEVELS } = require('./src/util/logging')
-const { lintVeevaTokens } = require('./src/token/lint')
-const { lintSourceFile } = require('./src/file/lint')
 const {
   TokenMessage,
 } = require('veeva-approved-email-util/lib/linting/message')
+const { GRADE } = require('veeva-approved-email-util/lib/linting/grading')
 
-const MAX_FILE_SIZE = 131072
+const { FILE_TYPES } = require('./util/cli')
+const { MESSAGE_LEVELS } = require('./util/logging')
+const { lintVeevaTokens } = require('./token/lint')
+const { lintSourceFile } = require('./file/lint')
+
+const MAX_FILE_SIZE = 131072 // Source: https://support.veeva.com/hc/en-us/articles/11330539418523-What-is-the-Maximum-Length-on-Veeva-Approved-Emails-in-Vault
 const logger = createLogger({
   levels: MESSAGE_LEVELS,
   format: format.cli(),
@@ -26,46 +24,43 @@ const logger = createLogger({
 })
 
 /**
- * Validates user input before executing the linter.
+ * Validates CLI user input before proceeding to lint.
  *
- * @param {Array<String>} CLIAgruments array of command line arguments
+ * @param {string} filePath array of command line arguments
+ * @param {FILE_TYPES} fileType array of command line arguments
  * @returns {void}
  */
-const validateCLIArugments = (CLIAgruments) => {
-  const parameters = CLIAgruments.slice(2)
-  const fileType = parameters[0]
-  const filePath = parameters[1]
+const validateInput = (filePath, options) => {
+  const fileType = options.type
 
-  // Validate CLI arguments.
-  if (parameters.length < 2) {
+  // Correct file extention (HTML).
+  if (filePath.indexOf('.html') < 0) {
     logger.error(
-      `Invalid number of arguments provided. Expecting 2 arguments but received ${parameters.length}.`
-    )
-    process.exit(1)
-  } else if (!FILE_TYPES[fileType]) {
-    logger.error(
-      `Invalid file type argument "${fileType}" provided, expecting either "et", "ef", or "tf".`
-    )
-    process.exit(1)
-  } else if (filePath.indexOf('.html') < 0) {
-    logger.error(
-      'Invalid file path argument, expecting a path to point a HTML file.'
+      'Invalid file type, expecting a path to point a file with the .html file extention.'
     )
     process.exit(1)
   }
 
-  // Begin linting HTML file.
-  lintHTMLFile(fileType, filePath)
+  // Proper file type option provided by the user.
+  if (!FILE_TYPES[fileType]) {
+    logger.error(
+      `Invalid file type "${fileType}", expecting either "et", "ef", or "tf".`
+    )
+    process.exit(1)
+  }
+
+  // Begin linting the HTML file.
+  lintHTMLFile(filePath, fileType)
 }
 
 /**
  * Lints the HTML file provided in the CLI arguments.
  *
- * @param {FILE_TYPES} fileType - RTE HTML file type
  * @param {String} filePath - path to HTML file to lint
+ * @param {FILE_TYPES} fileType - RTE HTML file type
  * @returns {void}
  */
-const lintHTMLFile = (fileType, filePath) => {
+const lintHTMLFile = (filePath, fileType) => {
   try {
     fs.readFile(filePath, 'utf8', (err, sourceHTML) => {
       if (err) throw new Error(`Failed to read file "${filePath}"`)
@@ -85,7 +80,7 @@ const lintHTMLFile = (fileType, filePath) => {
       const veevaTokenMsgs = lintVeevaTokens(veevaTokens)
       outputLog(veevaTokenMsgs)
 
-      // Lint file type (template, email fragment, template fragment).
+      // Lint file type (email template, email fragment, template fragment).
       logger.info(`Linting file type`)
       const veevaFileMsgs = lintSourceFile(FILE_TYPES[fileType], veevaTokens)
       outputLog(veevaFileMsgs)
@@ -94,9 +89,9 @@ const lintHTMLFile = (fileType, filePath) => {
 
       // Detect file size of email template.
       const fileSize = fs.statSync(filePath).size
-      if (fileType === 'et' && fileSize > MAX_FILE_SIZE) {
+      if (fileSize > MAX_FILE_SIZE) {
         logger.error(
-          `Email template HTML file "${filePath}" exceeds the maximum limit of ${MAX_FILE_SIZE} characters https://support.veeva.com/hc/en-us/articles/11330539418523-What-is-the-Maximum-Length-on-Veeva-Approved-Emails-in-Vault`
+          `HTML file "${filePath}" exceeds the maximum limit of ${MAX_FILE_SIZE} characters https://support.veeva.com/hc/en-us/articles/11330539418523-What-is-the-Maximum-Length-on-Veeva-Approved-Emails-in-Vault`
         )
         messageCount++
       }
@@ -109,7 +104,7 @@ const lintHTMLFile = (fileType, filePath) => {
       }
     })
   } catch (error) {
-    console.error(error)
+    logger.error(error)
     process.exit(1)
   }
 }
@@ -136,4 +131,6 @@ const outputLog = (messages) => {
   })
 }
 
-validateCLIArugments(process.argv)
+module.exports = {
+  validateInput,
+}
