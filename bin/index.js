@@ -13,9 +13,12 @@ program
   )
   .version('0.3.0')
   .argument('<file-path>', 'directory leading to the HTML file to lint.')
-  .option('-type, --type <type>', 'sdfsdfsd')
-  .action((filePath, options) => {
-    validateInput(filePath, options)
+  .argument(
+    '<file-type>',
+    'approved email file type, expecting "et", "ef", "tf"'
+  )
+  .action((filePath, fileType) => {
+    validateInput(filePath, fileType)
   })
 
-program.parse()
+program.parse(process.argv)

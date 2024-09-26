@@ -15,16 +15,16 @@ npm install veeva-rte-linter-cli -g
 To start linting run the following command in your terminal after installing:
 
 ```bash
-lint-veeva-rte {PATH-TO-HTML-FILE} -type {FILE-TYPE}
+lint-veeva-rte {PATH-TO-HTML-FILE} {FILE-TYPE}
 ```
 
 ### Path to HTML File
 
-Directory leading to the HTML file to lint.
+Path leading to the HTML file to lint.
 
 ### File Type
 
-**Case-sensitive**. Use **one** of the following options below.
+**Case-sensitive**, use **one** of the following options below.
 
 - `et` for [email templates](https://crmhelp.veeva.com/doc/Content/CRM_topics/Multichannel/ApprovedEmail/InitialConfig/Components.htm#EmailTemplates)
 - `et` for [email fragments](https://crmhelp.veeva.com/doc/Content/CRM_topics/Multichannel/ApprovedEmail/InitialConfig/Components.htm#EmailFragments)

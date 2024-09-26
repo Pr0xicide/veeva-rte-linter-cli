@@ -27,26 +27,24 @@ const logger = createLogger({
  * Validates CLI user input before proceeding to lint.
  *
  * @param {string} filePath array of command line arguments
- * @param {FILE_TYPES} fileType array of command line arguments
+ * @param {FILE_TYPES} fileType file type to lint
  * @returns {void}
  */
-const validateInput = (filePath, options) => {
-  const fileType = options.type
-
+const validateInput = (filePath, fileType) => {
   // Correct file extention (HTML).
   if (filePath.indexOf('.html') < 0) {
     logger.error(
       'Invalid file type, expecting a path to point a file with the .html file extention.'
     )
-    process.exit(1)
+    process.exit(9)
   }
 
   // Proper file type option provided by the user.
   if (!FILE_TYPES[fileType]) {
     logger.error(
-      `Invalid file type "${fileType}", expecting either "et", "ef", or "tf".`
+      `Invalid file type "${fileType}" provided, expecting either "et", "ef", or "tf".`
     )
-    process.exit(1)
+    process.exit(9)
   }
 
   // Begin linting the HTML file.
@@ -71,7 +69,7 @@ const lintHTMLFile = (filePath, fileType) => {
         `Retrieved ${veevaTokens.length} Veeva email tokens in "${filePath}"`
       )
 
-      // Determine token category.
+      // Determine token categories.
       logger.info(`Determining token categories found in "${filePath}"`)
       determineTokenCategory(veevaTokens)
 
@@ -81,27 +79,30 @@ const lintHTMLFile = (filePath, fileType) => {
       outputLog(veevaTokenMsgs)
 
       // Lint file type (email template, email fragment, template fragment).
-      logger.info(`Linting file type`)
+      logger.info(
+        `Linting all ${veevaTokens.length} Veeva tokens to see if they are supported in ${FILE_TYPES[fileType]}s`
+      )
       const veevaFileMsgs = lintSourceFile(FILE_TYPES[fileType], veevaTokens)
       outputLog(veevaFileMsgs)
 
       let messageCount = veevaTokenMsgs.length + veevaFileMsgs.length
 
       // Detect file size of email template.
+      logger.info(`Linting HTML file size`)
       const fileSize = fs.statSync(filePath).size
       if (fileSize > MAX_FILE_SIZE) {
         logger.error(
-          `HTML file "${filePath}" exceeds the maximum limit of ${MAX_FILE_SIZE} characters https://support.veeva.com/hc/en-us/articles/11330539418523-What-is-the-Maximum-Length-on-Veeva-Approved-Emails-in-Vault`
+          `File "${filePath}" exceeds the maximum limit of ${MAX_FILE_SIZE} characters, refer to https://support.veeva.com/hc/en-us/articles/11330539418523-What-is-the-Maximum-Length-on-Veeva-Approved-Emails-in-Vault`
         )
         messageCount++
       }
 
-      if (messageCount > 0) {
-        logger.info(
-          `Done linting "${filePath}" with ${messageCount} error(s)/warning(s) found`
-        )
-        process.exit(1)
-      }
+      // Final report.
+      finalLintReport({
+        fileType,
+        filePath,
+        errors: messageCount,
+      })
     })
   } catch (error) {
     logger.error(error)
@@ -110,7 +111,7 @@ const lintHTMLFile = (filePath, fileType) => {
 }
 
 /**
- * Outputs feedback to the terminal window.
+ * Outputs feedback (if any) to the terminal for the user to read.
  *
  * @param {Array<TokenMessage>} messages Array of messages to output
  * @returns {void}
@@ -129,6 +130,22 @@ const outputLog = (messages) => {
         break
     }
   })
+}
+
+const finalLintReport = (param) => {
+  const { filePath, fileType, errors } = param
+
+  if (errors > 0) {
+    logger.info(
+      `Done linting file "${filePath}", with ${errors} error(s)/warning(s) found/reported`
+    )
+    process.exit(1)
+  } else {
+    logger.info(
+      `Done linting file "${filePath}", with no issues found/reported`
+    )
+    process.exit(0)
+  }
 }
 
 module.exports = {

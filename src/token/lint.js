@@ -3,19 +3,12 @@ const {
   CATEGORY_TYPES,
 } = require('veeva-approved-email-util/lib/tokens/category')
 
+const { lint: lintContentTokens } = require('./content')
+const { lint: lintEmailFragmentTokens } = require('./email-fragment')
+const { lint: lintUserInputTokens } = require('./user-input')
+const { lint: lintVaultTokens } = require('./vault')
 const {
-  lint: lintContentTokens,
-} = require('veeva-approved-email-util/lib/linting/token/content')
-const {
-  lint: lintEmailFragmentTokens,
-} = require('veeva-approved-email-util/lib/linting/token/email-fragment')
-const {
-  lint: lintUserInputTokens,
-} = require('veeva-approved-email-util/lib/linting/token/user-input')
-const {
-  lint: lintVaultTokens,
-} = require('veeva-approved-email-util/lib/linting/token/vault')
-const {
+  TokenMessage,
   UnknownTokenMessage,
 } = require('veeva-approved-email-util/lib/linting/message')
 
@@ -30,7 +23,7 @@ const VEEVA_TOKEN_LINTERS = Object.freeze({
  * Lints an array of Veeva tokens from getVeevaTokens and determineTokenCategory.
  *
  * @param {Array<{line:number, category:CATEGORY_TYPES, token:String}>} veevaTokens array tokens to lint
- * @returns {Array<{line:number, grade:GRADE, token:String, message:String}>} array of objects containing info about each token
+ * @returns {Array<TokenMessage>} array of TokenMessage objects containing info about each token with issues or warnings
  */
 const lintVeevaTokens = (veevaTokens) => {
   const logs = []

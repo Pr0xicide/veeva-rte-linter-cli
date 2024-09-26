@@ -1,0 +1,21 @@
+module.exports = {
+  fields: [
+    'Credentials_vod__c',
+    'PersonalEmail',
+    'External_ID_vod__c',
+    'Gender_vod__c',
+    'Group_Specialty_1_vod__c',
+    'Group_Specialty_2_vod__c',
+    'PersonHomePhone',
+    'PersonalMobilePhone',
+    'Phone',
+    'Photo_vod__c',
+    'ID_vod__c',
+    'Name',
+    'Salutation',
+    'FirstName',
+    'LastName',
+    'Preferred_Name_vod__c',
+    'NPI_vod__c',
+  ],
+}
