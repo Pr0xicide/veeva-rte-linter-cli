@@ -8,7 +8,7 @@ const {
   flagDuplicateTokens,
   flagDuplicateCategories,
   flagUnsupportedTokens,
-} = require('./flag')
+} = require('../util/flag')
 
 const SUPPORTED_TOKEN_CATEGORIES = [
   CATEGORY_TYPES.CONTENT,

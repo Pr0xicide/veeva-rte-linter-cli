@@ -8,8 +8,8 @@ const {
   DuplicateTokenMessage,
   InvalidTokenMessage,
   UnknownTokenMessage,
-} = require('../util/message')
-const { FILE_TYPES } = require('../util/cli')
+} = require('./message')
+const { FILE_TYPES } = require('./cli')
 const { isCategorySupported, isTokenSupported } = require('./contains')
 
 /**

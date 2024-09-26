@@ -1,4 +1,3 @@
-const { FILE_TYPES } = require('../linting/file/types')
 const { GRADE } = require('../util/grading')
 
 /**

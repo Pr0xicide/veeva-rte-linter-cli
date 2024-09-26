@@ -7,7 +7,7 @@ const {
   flagDuplicateTokens,
   flagUnsupportedTokenCategories,
   flagUnsupportedTokens,
-} = require('./flag')
+} = require('../util/flag')
 
 const UNIQUE_TOKENS = [
   '{{FootnoteStart}}',
