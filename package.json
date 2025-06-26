@@ -1,12 +1,12 @@
 {
   "name": "veeva-rte-linter-cli",
-  "version": "0.2.0",
+  "version": "0.3.0",
   "description": "A rep-triggered email (RTE) HTML linter to report and identify issues when developing RTE files.",
   "author": "Jayvin Duong",
   "license": "MIT",
   "main": "index.js",
   "bin": {
-    "lint-veeva-rte": "index.js"
+    "lint-veeva-rte": "bin/index.js"
   },
   "repository": {
     "type": "git",
@@ -15,13 +15,14 @@
   "scripts": {
     "test": "jest",
     "dev": "jest --watch",
-    "lint": "node index.js",
+    "lint": "node bin/index.js",
     "prepare": "husky"
   },
   "keywords": [
     "veeva"
   ],
   "dependencies": {
+    "commander": "^12.1.0",
     "veeva-approved-email-util": "^0.4.5",
     "winston": "^3.11.0"
   },

@@ -85,11 +85,10 @@
           role="presentation">
           <tr>
             <td style="padding-bottom: 20px;">
-              {{customText[Hello|Good morning|Good afternoon|Dear|]}} {{customText[Mr|Mrs|Ms|Miss|Dr|<strong>Prof</strong>]}} {{accfname}} {{accLname}},
+              {{customText[Hello|Good morning|Good afternoon|Dear|]}} {{customText[Mr|Mrs|Ms|Miss|Dr|<strong>Prof</strong>]}} {{accfname}} {{accLname}} {{Account.Cred}},
             </td>
           </tr>
         </table>
-
 
 
         <!-- EMAIL CONTENT -->
@@ -106,6 +105,7 @@
             <td style="padding-bottom: 20px;">
               <table border="0" cellpadding="0" cellspacing="0" style="vertical-align: top; width: 600px;"
                 role="presentation">
+                {{insertEmailFragments[0,3]}}
                 {{insertEmailFragments[-1,3]}}
                 {{insertEmailFragments[1,3]}}
               </table>

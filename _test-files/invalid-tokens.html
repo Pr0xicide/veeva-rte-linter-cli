@@ -1,0 +1,25 @@
+<!-- Object Reference Tokens -->
+{{User.Custom_Field_vod__c}}
+{{Account.Custom_Field_vod__c}}
+
+<!-- Vault Tokens -->
+{{20}}
+{{$twenty}}
+{{$ET20a}}
+
+<!-- User Input Tokens -->
+{{customText()}}
+{{customText(|)}}
+{{customText(-10|Default Text)}}
+{{customText(a|20)}}
+
+
+{{customText[]}}
+{{customText[[]]}}
+{{customText[}}
+{{customText]}}
+{{customText[|2]}}
+{{customText[http://www.google.com]}}
+{{customText[{{customText[1|2]}}]}}
+{{customText[<strong>no</strong>]}}
+{{customText[{{User.Name}}|{{Account.FirstName}}]}}
