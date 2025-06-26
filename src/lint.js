@@ -66,7 +66,7 @@ const lintHTMLFile = (filePath, fileType) => {
       // Gather all tokens inside of the HTML source code.
       const veevaTokens = getVeevaTokens(sourceHTML)
       logger.info(
-        `Retrieved ${veevaTokens.length} Veeva email tokens in "${filePath}"`
+        `Detected ${veevaTokens.length} Veeva email tokens in "${filePath}"`
       )
 
       // Determine token categories.
@@ -119,7 +119,7 @@ const lintHTMLFile = (filePath, fileType) => {
 const outputLog = (messages) => {
   messages.forEach((msg) => {
     const { grade } = msg
-    const output = msg.getMessage()
+    const output = `Line ${msg.line} "${msg.token}" \n\t ${msg.message}`
 
     switch (grade) {
       case GRADE.WARNING:
